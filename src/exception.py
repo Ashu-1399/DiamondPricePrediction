@@ -1,4 +1,4 @@
-import sys, os
+import sys
 
 from src.logger import logging # This is user-defined py function
 
