@@ -1,7 +1,8 @@
-from sklearn.impute import SimpleImputer ## HAndling Missing Values
-from sklearn.preprocessing import StandardScaler # HAndling Feature Scaling
+from sklearn.impute import SimpleImputer # Handling Missing Values
+from sklearn.preprocessing import StandardScaler # Handling Feature Scaling
 from sklearn.preprocessing import OrdinalEncoder # Ordinal Encoding
-## pipelines
+
+# Pipelines
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 
@@ -16,16 +17,12 @@ from src.logger import logging
 from src.utils import save_object
 
 
-## Data Transformation config
-
+# Data Transformation config
 @dataclass
 class DataTransformationconfig:
     preprocessor_obj_file_path=os.path.join('artifacts','preprocessor.pkl')
 
-
-
-## Data Ingestionconfig class
-
+# Data Ingestionconfig class
 class DataTransformation:
     def __init__(self):
         self.data_transformation_config=DataTransformationconfig()
@@ -40,12 +37,12 @@ class DataTransformation:
             
             # Define the custom ranking for each ordinal variable
             cut_categories = ['Fair', 'Good', 'Very Good','Premium','Ideal']
-            color_categories = ['D', 'E', 'F', 'G', 'H', 'I', 'J']
+            color_categories = ['J', 'I', 'H', 'G', 'F', 'E', 'D']
             clarity_categories = ['I1','SI2','SI1','VS2','VS1','VVS2','VVS1','IF']
             
             logging.info('Pipeline Initiated')
 
-            ## Numerical Pipeline
+            # Numerical Pipeline
             num_pipeline=Pipeline(
                 steps=[
                 ('imputer',SimpleImputer(strategy='median')),
@@ -95,20 +92,18 @@ class DataTransformation:
 
             preprocessing_obj = self.get_data_transformation_object()
 
-            target_column_name = 'price'
-            drop_columns = [target_column_name,'id']
+            target_column = 'price'
+            drop_columns = [target_column,'id']
 
-            ## features into independent and dependent features
-
+            # features into independent and dependent features
             input_feature_train_df = train_df.drop(columns=drop_columns,axis=1)
-            target_feature_train_df=train_df[target_column_name]
+            target_feature_train_df=train_df[target_column]
 
 
             input_feature_test_df=test_df.drop(columns=drop_columns,axis=1)
-            target_feature_test_df=test_df[target_column_name]
+            target_feature_test_df=test_df[target_column]
 
-            ## apply the transformation
-
+            # apply the transformation
             input_feature_train_arr=preprocessing_obj.fit_transform(input_feature_train_df)
             input_feature_test_arr=preprocessing_obj.transform(input_feature_test_df)
 
@@ -135,10 +130,4 @@ class DataTransformation:
             logging.info("Exception occured in the initiate_datatransformation")
 
             raise CustomException(e,sys)
-
-
-    
-
-
-
 
